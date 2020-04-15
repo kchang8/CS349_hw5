@@ -31,16 +31,12 @@
     window.myTruck = myTruck;
 
     formHandler.addSubmitHandler(function (data) {
-        myTruck.createOrder.call(myTruck, data).then(function () {
-            checkList.addRow.call(checkList, data);
-        });
+        myTruck.createOrder.call(myTruck, data)
+        checkList.addRow.call(checkList, data);
     });
 
     formHandler.addInputHandler(Validation.isCompanyEmail);
 
     myTruck.printOrders(checkList.addRow.bind(checkList));
-
-    //webshim.polyfill('forms forms-ext');
-    //webshim.setOptions('forms', { addValidators: true, lazyCustomMessage: true });
 
 })(window);

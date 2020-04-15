@@ -16,16 +16,15 @@
     }
 
     CheckList.prototype.addClickHandler = function (fn) {
-        this.$element.on('click', 'input', function(event) {
+        this.$element.on("click", "input", function(event) {
             var email = event.target.value;
-            fn(email).then(function () {
-                this.removeRow(email);
-            }.bind(this));
-        }.bind(this));
+            this.removeRow(email);
+            fn(email);
+          }.bind(this));
     };
 
     CheckList.prototype.addRow = function (coffeeOrder) {
-        //Remove any exisiting rows that match the email address
+        //Remove any existing rows that match the email address
         this.removeRow(coffeeOrder.emailAddress);
 
         //Create a new instance of a row, using the coffee order info

@@ -8,13 +8,13 @@
             throw new Error('No remote URL supplied.');
         }
 
-        firebase.initializeApp();
+        firebase.initializeApp(config);
+        this.fbdb = firebase.firestore();
     }
 
     FirebaseDataStore.prototype.add = function (key, val) {
-        var fbdb = firebase.firestore();
-        return fbdb.collection("coffeeorders").doc(key).set({
-            name: val.coffee,
+        return this.fbdb.collection("coffeeorders").doc(key).set({
+            coffee: val.coffee,
             email: val.emailAddress,
             size: val.size,
             flavor: val.flavor,
@@ -22,27 +22,27 @@
         });
     };
 
-    FirebaseDataStore.prototype.getAll = function (cb) {
-        return $.get(this.serverUrl, function (serverResponse) {
-            if (cb) {
-                console.log(serverResponse);
-                cb(serverResponse);
-            }
-        });
+    FirebaseDataStore.prototype.getAll = function () {
+        var dict = {};
+        this.fbdb.collection("coffeeorders").get().then(function(querySnapshot) {
+            querySnapshot.forEach(function(doc) {
+                dict[doc.id] = doc.data();
+                console.log(doc.id, " => ", doc.data());
+            });
+         });
+        return dict;
     };
 
-    FirebaseDataStore.prototype.get = function (key, cb) {
-        return $.get(this.serverUrl + '/' + key, function (serverResponse) {
-            if (cb) {
-                console.log(serverResponse);
-                cb(serverResponse);
-            }
-        });
+    FirebaseDataStore.prototype.get = function (key) {
+        var docRef = this.fbdb.collection("coffeeorders").doc(key);
+        return docRef.get();
     };
 
     FirebaseDataStore.prototype.remove = function (key) {
-        return $.ajax(this.serverUrl + '/' + key, {
-            type: 'DELETE'
+        return this.fbdb.collection("coffeeorders").doc(key).delete().then(function() {
+            console.log("Document successfully deleted");
+        }).catch(function(error) {
+            console.error("Error removing document: ", error);
         });
     };
 

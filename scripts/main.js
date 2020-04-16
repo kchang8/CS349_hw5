@@ -27,6 +27,7 @@
     var myTruck = new Truck('ncc-1701', remoteDS);
     var checkList = new CheckList(CHECKLIST_SELECTOR);
     checkList.addClickHandler(myTruck.deliverOrder.bind(myTruck));
+    remoteDS.initChecklist(checkList);
     var formHandler = new FormHandler(FORM_SELECTOR);
     window.myTruck = myTruck;
 

@@ -15,7 +15,7 @@
     FirebaseDataStore.prototype.add = function (key, val) {
         return this.fbdb.collection("coffeeorders").doc(key).set({
             coffee: val.coffee,
-            email: val.emailAddress,
+            email: key,
             size: val.size,
             flavor: val.flavor,
             strength: val.strength
@@ -45,6 +45,14 @@
             console.error("Error removing document: ", error);
         });
     };
+
+    FirebaseDataStore.prototype.initChecklist = function (checklist) {
+        this.fbdb.collection("coffeeorders").get().then(function(querySnapshot) {
+            querySnapshot.forEach(function(doc) {
+              checklist.addRow.call(checklist, doc.data());
+            });
+        });
+      };
 
     App.FirebaseDataStore = FirebaseDataStore;
     window.App = App;
